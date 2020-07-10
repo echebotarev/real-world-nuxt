@@ -17,20 +17,18 @@ export default {
   components: {
     EventCard,
   },
-  asyncData({ $axios, error }) {
-    return $axios
-      .get('http://localhost:8080/events')
-      .then((resp) => {
-        return {
-          events: resp.data,
-        }
+  async asyncData({ $axios, error }) {
+    try {
+      const { data } = await $axios.get('http://localhost:8080/events')
+      return {
+        events: data,
+      }
+    } catch (e) {
+      error({
+        statusCode: 503,
+        message: 'Unable API server',
       })
-      .catch((e) => {
-        error({
-          statusCode: 503,
-          message: 'Unable API server',
-        })
-      })
+    }
   },
   head() {
     return {
